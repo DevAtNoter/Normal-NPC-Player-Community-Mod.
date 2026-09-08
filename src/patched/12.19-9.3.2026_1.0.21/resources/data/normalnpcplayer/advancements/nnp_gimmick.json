@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "normalnpcplayer:suspecious_bottle"
+    },
+    "title": {
+      "translate": "advancements.normalnpcplayer.nnp_gimmick.title"
+    },
+    "description": {
+      "translate": "advancements.normalnpcplayer.nnp_gimmick.description"
+    },
+    "frame": "challenge",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/block/white_concrete.png"
+  },
+  "criteria": {
+    "root": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

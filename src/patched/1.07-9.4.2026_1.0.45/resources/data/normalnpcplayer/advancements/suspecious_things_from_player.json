@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "normalnpcplayer:suspecious_bottle"
+    },
+    "title": {
+      "translate": "advancements.normalnpcplayer.suspecious_things_from_player.title"
+    },
+    "description": {
+      "translate": "advancements.normalnpcplayer.suspecious_things_from_player.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/white_concrete.png"
+  },
+  "criteria": {
+    "received_suspecious_bottle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "normalnpcplayer:suspecious_bottle"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

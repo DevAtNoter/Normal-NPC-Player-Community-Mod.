@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["GGG", "GMG", "GGG"],
+  "key": {
+    "G": {"item": "minecraft:gold_ingot"},
+    "M": {"item": "normalnpcplayer:milk_bottle"}
+  },
+  "result": {"item": "normalnpcplayer:golden_milk_bottle", "count": 1}
+}

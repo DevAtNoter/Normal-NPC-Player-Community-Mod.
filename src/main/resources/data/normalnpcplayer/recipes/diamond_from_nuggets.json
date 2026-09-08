@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "diamond",
+  "pattern": ["DDD", "DDD", "DDD"],
+  "key": {
+    "D": {"item": "minecraft:diamond_nugget"}
+  },
+  "result": {
+    "item": "minecraft:diamond",
+    "count": 1
+  }
+}

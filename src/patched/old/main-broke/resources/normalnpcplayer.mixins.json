@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "net.devatnoter.normalnpcplayer.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BabyItemDropMixin",
+    "BabyItemContainerMixin",
+    "BabyItemSlotMixin",
+    "BabyItemSlotTakeMixin",
+    "BabyItemFrameMixin"
+  ],
+  "client": [
+    "PlayerModelAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

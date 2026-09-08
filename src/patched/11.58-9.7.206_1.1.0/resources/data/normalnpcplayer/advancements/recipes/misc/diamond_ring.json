@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_diamond_gem_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["normalnpcplayer:diamond_gem_fragment"]}]}
+    },
+    "has_silver_ring": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["normalnpcplayer:silver_ring"]}]}
+    }
+  },
+  "requirements": [["has_diamond_gem_fragment"], ["has_silver_ring"]],
+  "rewards": {"recipes": ["normalnpcplayer:diamond_ring"]}
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Growth",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:wheat",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A child needs time, care, and the right conditions to grow.\n\nProtect it while it is still small."
+    }
+  ]
+}

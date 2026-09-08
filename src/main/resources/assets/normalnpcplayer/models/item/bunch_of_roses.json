@@ -1,0 +1,33 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "normalnpcplayer:item/token_of_affection/bunch_of_roses"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-20.08, -47.47, -86.71],
+			"translation": [3.25, 7.5, 2.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [163, 33, -86.71],
+			"translation": [3.25, 7.25, 2.5]
+		},
+		"firstperson_righthand": {
+			"rotation": [-17, -56, -27],
+			"translation": [3.75, 5.75, -8.75]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-1, 128, 14],
+			"translation": [2.5, 4.25, -8.25]
+		},
+		"ground": {
+			"translation": [0, 3.75, 0],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"head": {
+			"translation": [0, 13.25, 0]
+		}
+	}
+}

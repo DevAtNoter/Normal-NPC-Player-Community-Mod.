@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "net.devatnoter.normalnpcplayer.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BabyItemDropMixin",
+    "BabyItemContainerMixin",
+    "BabyItemSlotMixin",
+    "BabyItemSlotTakeMixin",
+    "BabyItemFrameMixin",
+    "PlayerHeadPassengerMixin",
+    "PlayerVehicleStartRidingMixin"
+  ],
+  "client": [
+    "PlayerModelAccessor",
+    "BabyFirstPersonPickMixin",
+    "BabyFirstPersonRenderMixin",
+    "BabyFirstPersonInteractionMixin",
+    "BabyFirstPersonUseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

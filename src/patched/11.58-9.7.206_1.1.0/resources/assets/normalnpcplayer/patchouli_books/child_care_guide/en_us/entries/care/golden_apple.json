@@ -1,0 +1,11 @@
+{
+  "name": "Golden Apple",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:golden_apple",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Craft a Golden Apple with 8 Gold Ingots around 1 Apple.\n\nGGG\nGAG\nGGG\n\nG = Gold Ingot\nA = Apple"
+    }
+  ]
+}

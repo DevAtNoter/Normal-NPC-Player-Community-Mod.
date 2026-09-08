@@ -1,0 +1,11 @@
+{
+  "name": "A Rare Story",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:enchanted_golden_apple",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "There is no recipe written here for the Enchanted Golden Milk Bottle.\n\nThe old story says it will be found together with an Enchanted Golden Apple, without fail."
+    }
+  ]
+}

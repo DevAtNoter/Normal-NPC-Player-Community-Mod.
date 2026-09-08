@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {"layer0": "normalnpcplayer:item/token_of_affection/silver_ring"}
+}

@@ -1,0 +1,32 @@
+{
+  "baby.idle": {
+    "sounds": [
+      "normalnpcplayer:baby/idle/baby_idle_01",
+      "normalnpcplayer:baby/idle/baby_idle_02",
+      "normalnpcplayer:baby/idle/baby_idle_03",
+      "normalnpcplayer:baby/idle/baby_idle_04",
+      "normalnpcplayer:baby/idle/baby_idle_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.hungry": {
+    "sounds": [
+      "normalnpcplayer:baby/hungry/baby_hungry_01",
+      "normalnpcplayer:baby/hungry/baby_hungry_02",
+      "normalnpcplayer:baby/hungry/baby_hungry_03",
+      "normalnpcplayer:baby/hungry/baby_hungry_04",
+      "normalnpcplayer:baby/hungry/baby_hungry_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.scared": {
+    "sounds": [
+      "normalnpcplayer:baby/scared/baby_scared_01",
+      "normalnpcplayer:baby/scared/baby_scared_02",
+      "normalnpcplayer:baby/scared/baby_scared_03",
+      "normalnpcplayer:baby/scared/baby_scared_04",
+      "normalnpcplayer:baby/scared/baby_scared_05"
+    ],
+    "attenuation_distance": 16
+  }
+}

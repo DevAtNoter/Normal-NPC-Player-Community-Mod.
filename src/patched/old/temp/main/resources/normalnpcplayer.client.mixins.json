@@ -1,0 +1,9 @@
+{
+  "required": false,
+  "package": "net.devatnoter.normalnpcplayer.client.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

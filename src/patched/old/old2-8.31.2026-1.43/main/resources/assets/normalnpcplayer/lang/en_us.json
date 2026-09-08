@@ -1,0 +1,10 @@
+{
+  "item.normalnpcplayer.baby_npc_player_spawn_egg": "Baby NPC Player Spawn Egg",
+  "itemGroup.normalnpcplayer": "Normal NPC Player",
+  "item.normalnpcplayer.baby_npc_player": "Baby of %s",
+  "item.normalnpcplayer.baby_npc_player.description": "A living baby NPC Player. Handle with care.",
+  "item.normalnpcplayer.baby_npc_player.owner": "Belongs to %s",
+  "entity.normalnpcplayer.adult_player_mob": "Player Mob",
+  "advancements.normalnpcplayer.the_parents_mission_was_accomplished.title": "The Parents' Mission Was Accomplished",
+  "advancements.normalnpcplayer.the_parents_mission_was_accomplished.description": "Your Baby grew up after you defeated the Ender Dragon."
+}

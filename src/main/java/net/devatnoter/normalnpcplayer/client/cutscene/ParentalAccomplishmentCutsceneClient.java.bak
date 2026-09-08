@@ -1,0 +1,486 @@
+package net.devatnoter.normalnpcplayer.client.cutscene;
+
+import net.devatnoter.normalnpcplayer.NormalNPCPlayer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.Random;
+
+/**
+ * Client-side spectator-style camera for the server-wide Parental Accomplishment ceremony.
+ * The camera is a client-only invisible spectator rig, never the player's own camera.
+ */
+@Mod.EventBusSubscriber(
+        modid = NormalNPCPlayer.MOD_ID,
+        value = Dist.CLIENT,
+        bus = Mod.EventBusSubscriber.Bus.FORGE
+)
+public final class ParentalAccomplishmentCutsceneClient {
+    private static final int TOTAL_TICKS = 600;       // 30s
+    private static final int FIRST_SHOT_TICKS = 100;  // 0-5s: achiever
+    private static final int CHILD_SHOT_TICKS = 100;  // 5-10s: child
+    private static final int RANDOM_SHOT_TICKS = 80;  // 4s each
+    private static final int CREDIT_TICKS = 100;      // final 5s
+
+    private static final String[] VERSES = {
+            "Beloved of the End",
+            "Child of the Last Dawn",
+            "Heir of a story unfinished",
+            "Born beneath a dying sky",
+            "The End remembers your name",
+            "Beloved where all things perish",
+            "A child carried beyond the last light",
+            "From love, something survived",
+            "The last light found a name",
+            "Where the world ends, life begins",
+            "A fragile star beneath an endless night",
+            "What was lost became a beginning",
+            "The silence carried your name",
+            "Beyond the ashes, a new story breathes",
+            "The final dawn was not the end"
+    };
+
+    private static boolean active;
+    private static boolean suppressNextPauseScreen;
+    private static int tick;
+    private static int achieverId = -1;
+    private static int childId = -1;
+    private static long startGameTime;
+    private static long sceneSeed;
+    private static String verse = VERSES[0];
+    private static int verseIndex;
+    private static int randomShotIndex;
+    private static int randomShotAge;
+
+    private static Vec3 firstShotStartPosition = Vec3.ZERO;
+    private static Vec3 firstShotTargetPosition = Vec3.ZERO;
+    private static Vec3 shotStartPosition = Vec3.ZERO;
+    private static Vec3 shotTargetPosition = Vec3.ZERO;
+    private static float firstShotStartYaw;
+    private static float firstShotStartPitch;
+    private static float shotStartYaw;
+    private static float shotStartPitch;
+
+    // Freeze cinematic anchors at scene start. The real entities may move during the
+    // 30-second ceremony; the camera must not chase their network/tick movement.
+    private static Vec3 achieverScenePosition = Vec3.ZERO;
+    private static Vec3 childScenePosition = Vec3.ZERO;
+    private static float achieverSceneYaw;
+    private static float childSceneYaw;
+    private static Vec3 shotLookTarget = Vec3.ZERO;
+    private static Vec3 lastRigPosition = Vec3.ZERO;
+    private static float lastRigYaw;
+    private static float lastRigPitch;
+    private static boolean rigTransformInitialized;
+    private static ArmorStand cameraRig;
+    private static CameraType previousCameraType;
+
+    private ParentalAccomplishmentCutsceneClient() {}
+
+    public static void start(int newAchieverId, int newChildId, long newStartGameTime, long newSceneSeed) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null || minecraft.player == null) return;
+
+        Entity achiever = minecraft.level.getEntity(newAchieverId);
+        Entity child = minecraft.level.getEntity(newChildId);
+        if (!isValidSubject(minecraft, achiever) || !isValidSubject(minecraft, child)) return;
+
+        // Replace an already-running local scene cleanly.
+        if (active) stop();
+
+        active = true;
+        suppressNextPauseScreen = false;
+        previousCameraType = minecraft.options.getCameraType();
+        minecraft.options.setCameraType(CameraType.FIRST_PERSON);
+        achieverId = newAchieverId;
+        childId = newChildId;
+        startGameTime = newStartGameTime;
+        sceneSeed = newSceneSeed;
+        randomShotIndex = 0;
+        randomShotAge = 0;
+        verseIndex = deterministicVerseIndex(0);
+        verse = VERSES[verseIndex];
+
+        // Snapshot subjects once. Do not derive camera coordinates from moving
+        // entities every tick; that creates visible vertical/yaw jitter.
+        achieverScenePosition = achiever.position();
+        childScenePosition = child.position();
+        achieverSceneYaw = achiever.getYRot();
+        childSceneYaw = child.getYRot();
+
+        rigTransformInitialized = false;
+        firstShotStartPosition = createEstablishingPosition(achieverScenePosition);
+        firstShotTargetPosition = frontOf(achieverScenePosition, achieverSceneYaw, 5.0D, 1.45D);
+        firstShotStartYaw = lookAt(firstShotStartPosition, targetPoint(achieverScenePosition, achiever.getBbHeight(), 0.72D))[0];
+        firstShotStartPitch = lookAt(firstShotStartPosition, targetPoint(achieverScenePosition, achiever.getBbHeight(), 0.72D))[1];
+
+        createSpectatorCamera(minecraft);
+        if (minecraft.screen != null) minecraft.setScreen(null);
+    }
+
+    private static boolean isValidSubject(Minecraft minecraft, Entity entity) {
+        return entity != null && entity.level() == minecraft.level;
+    }
+
+    private static void createSpectatorCamera(Minecraft minecraft) {
+        if (minecraft.level == null) return;
+
+        cameraRig = EntityType.ARMOR_STAND.create(minecraft.level);
+        if (cameraRig == null) return;
+
+        cameraRig.setInvisible(true);
+        cameraRig.setNoGravity(true);
+        cameraRig.setInvulnerable(true);
+        cameraRig.setSilent(true);
+        cameraRig.noPhysics = true;
+
+        // Client-only entity: it is never sent to or spawned on the server.
+        minecraft.level.addFreshEntity(cameraRig);
+        minecraft.setCameraEntity(cameraRig);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+
+        if (suppressNextPauseScreen) suppressNextPauseScreen = false;
+        if (!active) return;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null || minecraft.player == null || cameraRig == null) {
+            stop();
+            return;
+        }
+
+        Entity achiever = minecraft.level.getEntity(achieverId);
+        Entity child = minecraft.level.getEntity(childId);
+        if (!isValidSubject(minecraft, achiever) || !isValidSubject(minecraft, child)) {
+            stop();
+            return;
+        }
+
+        // The scene is on a server timeline. Every viewer receives the same
+        // start tick and seed, so shots/text change at the same moments.
+        long elapsed = minecraft.level.getGameTime() - startGameTime;
+        tick = (int) Math.max(0L, Math.min((long) TOTAL_TICKS, elapsed));
+
+        if (minecraft.screen != null) minecraft.setScreen(null);
+        // Perspective is locked to first-person mode for the spectator rig;
+        // the player is not the camera entity and cannot rotate this camera.
+        minecraft.options.setCameraType(CameraType.FIRST_PERSON);
+        minecraft.setCameraEntity(cameraRig);
+
+        if (tick < FIRST_SHOT_TICKS) {
+            updateAchieverShot(cameraRig, achiever);
+        } else if (tick < FIRST_SHOT_TICKS + CHILD_SHOT_TICKS) {
+            updateChildShot(cameraRig, child, achiever);
+        } else if (tick < TOTAL_TICKS - CREDIT_TICKS) {
+            updateRandomShot(cameraRig, achiever, child);
+        }
+
+        updateVerse();
+
+        if (tick >= TOTAL_TICKS) stop();
+    }
+
+    private static void updateAchieverShot(ArmorStand rig, Entity achiever) {
+        float phase = smoothStep(clamp01(tick / (float) FIRST_SHOT_TICKS));
+        Vec3 desired = lerpVec(firstShotStartPosition, firstShotTargetPosition, phase);
+        Vec3 target = targetPoint(achieverScenePosition, achiever.getBbHeight(), 0.72D);
+        float[] targetAngles = lookAt(desired, target);
+        float yaw = lerpAngle(firstShotStartYaw, targetAngles[0], phase);
+        float pitch = lerp(firstShotStartPitch, targetAngles[1], phase);
+        placeRig(rig, desired, new float[]{yaw, pitch});
+    }
+
+    private static void updateChildShot(ArmorStand rig, Entity child, Entity achiever) {
+        float phase = smoothStep(clamp01((tick - FIRST_SHOT_TICKS) / (float) CHILD_SHOT_TICKS));
+        Vec3 start = firstShotTargetPosition;
+        Vec3 target = frontOf(childScenePosition, childSceneYaw, 4.0D, 1.45D);
+        Vec3 position = lerpVec(start, target, phase);
+        Vec3 startLook = targetPoint(achieverScenePosition, achiever.getBbHeight(), 0.72D);
+        Vec3 targetLook = targetPoint(childScenePosition, child.getBbHeight(), 0.72D);
+        float[] startAngles = lookAt(start, startLook);
+        float[] targetAngles = lookAt(target, targetLook);
+        float yaw = lerpAngle(startAngles[0], targetAngles[0], phase);
+        float pitch = lerp(startAngles[1], targetAngles[1], phase);
+        placeRig(rig, position, new float[]{yaw, pitch});
+    }
+
+    private static void updateRandomShot(ArmorStand rig, Entity achiever, Entity child) {
+        int shot = Math.max(1, (tick - FIRST_SHOT_TICKS - CHILD_SHOT_TICKS) / RANDOM_SHOT_TICKS + 1);
+        int age = (tick - FIRST_SHOT_TICKS - CHILD_SHOT_TICKS) % RANDOM_SHOT_TICKS;
+        if (shot != randomShotIndex) {
+            randomShotIndex = shot;
+            randomShotAge = age;
+            shotStartPosition = createRandomScenePosition(shot - 1);
+            shotTargetPosition = createRandomScenePosition(shot);
+            Entity subject = subjectForShot(child, achiever, shot);
+            Vec3 subjectPosition = subject == child ? childScenePosition : achieverScenePosition;
+            double subjectHeight = subject.getBbHeight();
+            shotLookTarget = targetPoint(subjectPosition, subjectHeight, 0.72D);
+
+            // Start each shot from the exact end of the previous shot and its
+            // final orientation. This avoids a one-frame snap when the subject
+            // changes from Child to Achiever (or vice versa).
+            if (shot == 1) {
+                shotStartYaw = lookAt(shotStartPosition, shotLookTarget)[0];
+                shotStartPitch = lookAt(shotStartPosition, shotLookTarget)[1];
+            } else {
+                Entity previousSubject = subjectForShot(child, achiever, shot - 1);
+                Vec3 previousSubjectPosition = previousSubject == child ? childScenePosition : achieverScenePosition;
+                Vec3 previousLookTarget = targetPoint(previousSubjectPosition, previousSubject.getBbHeight(), 0.72D);
+                shotStartYaw = lookAt(shotStartPosition, previousLookTarget)[0];
+                shotStartPitch = lookAt(shotStartPosition, previousLookTarget)[1];
+            }
+        } else {
+            randomShotAge = age;
+        }
+
+        float phase = smoothStep(clamp01(randomShotAge / (float) RANDOM_SHOT_TICKS));
+        Vec3 position = lerpVec(shotStartPosition, shotTargetPosition, phase);
+        float[] targetAngles = lookAt(position, shotLookTarget);
+        float yaw = lerpAngle(shotStartYaw, targetAngles[0], phase);
+        float pitch = lerp(shotStartPitch, targetAngles[1], phase);
+        placeRig(rig, position, new float[]{yaw, pitch});
+    }
+
+    private static Entity subjectForShot(Entity child, Entity achiever, int shot) {
+        return (shot % 3 == 0) ? achiever : child;
+    }
+
+    private static Vec3 createRandomScenePosition(int index) {
+        boolean childShot = ((index + 1) % 3 != 0);
+        Vec3 subjectPosition = childShot ? childScenePosition : achieverScenePosition;
+        Random random = new Random(sceneSeed ^ (0x9E3779B97F4A7C15L * (index + 1L)));
+        double angle = random.nextDouble() * Math.PI * 2.0D;
+        double radius = 5.5D + random.nextDouble() * 4.0D;
+        double height = 1.6D + random.nextDouble() * 1.4D;
+        return new Vec3(
+                subjectPosition.x + Math.cos(angle) * radius,
+                subjectPosition.y + height,
+                subjectPosition.z + Math.sin(angle) * radius
+        );
+    }
+
+    private static void placeRig(ArmorStand rig, Vec3 cameraPosition, float[] angles) {
+        // Let Minecraft's normal render interpolation do the smoothing between
+        // the previous and current cinematic transform. The previous version
+        // forced old == current every tick, which removed interpolation and
+        // made the camera visibly step at 20 Hz.
+        double eyeHeight = rig.getEyeHeight();
+        double x = cameraPosition.x;
+        double y = cameraPosition.y - eyeHeight;
+        double z = cameraPosition.z;
+
+        if (!rigTransformInitialized) {
+            lastRigPosition = new Vec3(x, y, z);
+            lastRigYaw = angles[0];
+            lastRigPitch = angles[1];
+            rigTransformInitialized = true;
+        }
+
+        rig.xo = lastRigPosition.x;
+        rig.yo = lastRigPosition.y;
+        rig.zo = lastRigPosition.z;
+        rig.yRotO = lastRigYaw;
+        rig.xRotO = lastRigPitch;
+        rig.yHeadRotO = lastRigYaw;
+
+        rig.setPosRaw(x, y, z);
+        rig.setYRot(angles[0]);
+        rig.setXRot(angles[1]);
+        rig.setYHeadRot(angles[0]);
+
+        lastRigPosition = new Vec3(x, y, z);
+        lastRigYaw = angles[0];
+        lastRigPitch = angles[1];
+    }
+
+    private static void updateVerse() {
+        int newIndex = deterministicVerseIndex(tick / 45);
+        if (newIndex != verseIndex) {
+            verseIndex = newIndex;
+            verse = VERSES[verseIndex];
+        }
+    }
+
+    private static int deterministicVerseIndex(int slot) {
+        long mixed = sceneSeed ^ (0xD1B54A32D192ED03L * (slot + 1L));
+        mixed ^= (mixed >>> 33);
+        mixed *= 0xff51afd7ed558ccdL;
+        mixed ^= (mixed >>> 33);
+        return (int) Math.floorMod(mixed, VERSES.length);
+    }
+
+    @SubscribeEvent
+    public static void onEscape(InputEvent.Key event) {
+        if (!active || event.getKey() != GLFW.GLFW_KEY_ESCAPE || event.getAction() != GLFW.GLFW_PRESS) return;
+        suppressNextPauseScreen = true;
+        stop();
+    }
+
+    @SubscribeEvent
+    public static void onScreenOpening(ScreenEvent.Opening event) {
+        if (active || suppressNextPauseScreen) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onGuiOverlay(RenderGuiOverlayEvent.Pre event) {
+        if (active) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        // The camera is a separate cinematic entity, so the player's first-person
+        // hand must never be rendered into the shot.
+        if (active) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onGuiPost(net.minecraftforge.client.event.RenderGuiEvent.Post event) {
+        if (!active) return;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.font == null) return;
+
+        GuiGraphics graphics = event.getGuiGraphics();
+        int width = minecraft.getWindow().getGuiScaledWidth();
+        int height = minecraft.getWindow().getGuiScaledHeight();
+
+        if (tick >= TOTAL_TICKS - CREDIT_TICKS) {
+            float t = (tick - (TOTAL_TICKS - CREDIT_TICKS)) / (float) CREDIT_TICKS;
+            int alpha = (int) (255.0F * smoothStep(clamp01(t * 2.5F)));
+            graphics.drawCenteredString(
+                    minecraft.font,
+                    Component.literal("Normal NPC Player"),
+                    width / 2,
+                    height / 2 - 4,
+                    (alpha << 24) | 0xFFFFFF
+            );
+            return;
+        }
+
+        int alpha = (int) (255.0F * cinematicOpacity());
+        graphics.drawCenteredString(
+                minecraft.font,
+                Component.literal(verse),
+                width / 2,
+                Math.max(20, height / 2 - 42),
+                (alpha << 24) | 0xFFFFFF
+        );
+    }
+
+    private static Vec3 createEstablishingPosition(Vec3 subject) {
+        Random random = new Random(sceneSeed ^ 0xA24BAED4963EE407L);
+        double angle = random.nextDouble() * Math.PI * 2.0D;
+        double radius = 9.0D + random.nextDouble() * 3.0D;
+        double y = subject.y + 4.5D + random.nextDouble() * 1.5D;
+        return new Vec3(
+                subject.x + Math.cos(angle) * radius,
+                y,
+                subject.z + Math.sin(angle) * radius
+        );
+    }
+
+    private static Vec3 frontOf(Vec3 entityPosition, float entityYaw, double distance, double height) {
+        double radians = Math.toRadians(entityYaw);
+        return new Vec3(
+                entityPosition.x - Math.sin(radians) * distance,
+                entityPosition.y + height,
+                entityPosition.z - Math.cos(radians) * distance
+        );
+    }
+
+    private static Vec3 targetPoint(Vec3 entityPosition, double bbHeight, double heightFactor) {
+        return new Vec3(
+                entityPosition.x,
+                entityPosition.y + bbHeight * heightFactor,
+                entityPosition.z
+        );
+    }
+
+    private static float[] lookAt(Vec3 camera, Vec3 target) {
+        double dx = target.x - camera.x;
+        double dy = target.y - camera.y;
+        double dz = target.z - camera.z;
+        double horizontal = Math.sqrt(dx * dx + dz * dz);
+        if (horizontal < 1.0E-5D) horizontal = 1.0E-5D;
+        float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90.0D);
+        float pitch = (float) (-Math.toDegrees(Math.atan2(dy, horizontal)));
+        return new float[]{yaw, pitch};
+    }
+
+    private static Vec3 lerpVec(Vec3 a, Vec3 b, float t) {
+        return new Vec3(
+                lerpDouble(a.x, b.x, t),
+                lerpDouble(a.y, b.y, t),
+                lerpDouble(a.z, b.z, t)
+        );
+    }
+
+    private static double lerpDouble(double a, double b, double t) { return a + (b - a) * t; }
+    private static float lerp(float a, float b, float t) { return a + (b - a) * t; }
+
+    private static float lerpAngle(float a, float b, float t) {
+        return a + wrapDegrees(b - a) * t;
+    }
+
+    private static float wrapDegrees(float degrees) {
+        float wrapped = degrees % 360.0F;
+        if (wrapped >= 180.0F) wrapped -= 360.0F;
+        if (wrapped < -180.0F) wrapped += 360.0F;
+        return wrapped;
+    }
+
+    private static float smoothStep(float t) { return t * t * (3.0F - 2.0F * t); }
+    private static float clamp01(float value) { return Math.max(0.0F, Math.min(1.0F, value)); }
+
+    private static float cinematicOpacity() {
+        float t = tick / (float) TOTAL_TICKS;
+        if (t < 0.06F) return smoothStep(t / 0.06F);
+        if (t > 0.88F) return smoothStep((1.0F - t) / 0.12F);
+        return 1.0F;
+    }
+
+    public static boolean isActive() { return active; }
+
+    private static void stop() {
+        Minecraft minecraft = Minecraft.getInstance();
+        active = false;
+        tick = 0;
+        achieverId = -1;
+        childId = -1;
+        randomShotIndex = 0;
+        randomShotAge = 0;
+
+        if (cameraRig != null) {
+            cameraRig.remove(Entity.RemovalReason.DISCARDED);
+            cameraRig = null;
+        }
+
+        if (minecraft.player != null) {
+            minecraft.setCameraEntity(minecraft.player);
+        }
+        if (previousCameraType != null && minecraft.options != null) {
+            minecraft.options.setCameraType(previousCameraType);
+        }
+        previousCameraType = null;
+        if (minecraft.screen != null) minecraft.setScreen(null);
+    }
+}

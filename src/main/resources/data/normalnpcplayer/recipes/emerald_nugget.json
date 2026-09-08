@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "emerald_nugget",
+  "ingredients": [
+    {"item": "minecraft:emerald"}
+  ],
+  "result": {
+    "item": "minecraft:emerald_nugget",
+    "count": 9
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Golden Milk Bottle",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:gold_ingot",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A Golden Milk Bottle is crafted with 8 Gold Ingots around 1 Milk Bottle.\n\nGGG\nGMG\nGGG\n\nG = Gold Ingot\nM = Milk Bottle"
+    }
+  ]
+}

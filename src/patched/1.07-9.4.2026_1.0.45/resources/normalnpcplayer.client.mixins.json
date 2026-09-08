@@ -1,0 +1,11 @@
+{
+  "required": false,
+  "package": "net.devatnoter.normalnpcplayer.client.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "BabyFirstPersonTargetMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

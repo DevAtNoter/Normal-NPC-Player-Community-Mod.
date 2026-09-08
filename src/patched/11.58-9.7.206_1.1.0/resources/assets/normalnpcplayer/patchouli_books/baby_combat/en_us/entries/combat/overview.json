@@ -1,0 +1,11 @@
+{
+  "name": "Totem of Baby Combat",
+  "category": "normalnpcplayer:baby_combat",
+  "icon": "minecraft:totem_of_undying",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "This is not an ordinary totem.\n\nIt belongs to the combat tradition of the babies."
+    }
+  ]
+}

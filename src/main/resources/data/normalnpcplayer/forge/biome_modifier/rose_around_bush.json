@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "normalnpcplayer:rose_around_bush",
+  "step": "vegetal_decoration"
+}

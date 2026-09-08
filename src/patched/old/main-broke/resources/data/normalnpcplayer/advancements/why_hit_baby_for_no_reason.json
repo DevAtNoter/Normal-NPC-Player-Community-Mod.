@@ -1,0 +1,23 @@
+{
+  "parent": "normalnpcplayer:your_first_child",
+  "display": {
+    "icon": {
+      "item": "minecraft:player_head"
+    },
+    "title": {
+      "text": "Why hit baby for no reason?"
+    },
+    "description": {
+      "text": "You hit your own child for the first time."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "unlock": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

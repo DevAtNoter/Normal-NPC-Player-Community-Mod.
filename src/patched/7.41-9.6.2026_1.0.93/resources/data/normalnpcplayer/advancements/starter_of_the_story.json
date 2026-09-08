@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:player_head"
+    },
+    "title": {
+      "translate": "advancements.normalnpcplayer.starter_of_the_story.title"
+    },
+    "description": {
+      "translate": "advancements.normalnpcplayer.starter_of_the_story.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/white_concrete.png"
+  },
+  "criteria": {
+    "create_player_baby": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

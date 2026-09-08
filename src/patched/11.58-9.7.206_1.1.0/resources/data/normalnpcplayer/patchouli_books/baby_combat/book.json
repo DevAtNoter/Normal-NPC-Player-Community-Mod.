@@ -1,0 +1,13 @@
+{
+  "name": "Baby Combat",
+  "landing_text": "A field guide to the Totem of Baby Combat and the encounters surrounding it.",
+  "subtitle": "Normal NPC Player",
+  "book_texture": "normalnpcplayer:textures/gui/patchouli/baby_combat.png",
+  "filler_texture": "normalnpcplayer:textures/gui/patchouli/page_filler.png",
+  "crafting_texture": "normalnpcplayer:textures/gui/patchouli/crafting.png",
+  "model": "normalnpcplayer:baby_combat_guide",
+  "use_resource_pack": true,
+  "show_toasts": true,
+  "use_blocky_font": false,
+  "pause_game": false
+}

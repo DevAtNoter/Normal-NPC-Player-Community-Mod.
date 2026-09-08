@@ -1,0 +1,15 @@
+{
+  "name": "Child Care",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:player_head",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A child depends on its parents. Protect it while it is small, provide proper food, and give it time to grow."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "This guide collects the basic care knowledge available to you."
+    }
+  ]
+}

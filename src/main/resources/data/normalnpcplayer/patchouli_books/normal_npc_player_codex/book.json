@@ -1,0 +1,13 @@
+{
+  "name": "Normal NPC Player Codex",
+  "landing_text": "The field manual for Normal NPC Player: Growth Children, family life, survival, work, exploration and intelligent threat avoidance.",
+  "subtitle": "Normal NPC Player",
+  "book_texture": "normalnpcplayer:textures/gui/patchouli/normal_npc_player_codex.png",
+  "filler_texture": "normalnpcplayer:textures/gui/patchouli/page_filler.png",
+  "crafting_texture": "normalnpcplayer:textures/gui/patchouli/crafting.png",
+  "model": "normalnpcplayer:normal_npc_player_codex",
+  "use_resource_pack": true,
+  "show_toasts": true,
+  "use_blocky_font": false,
+  "pause_game": false
+}

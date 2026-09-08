@@ -1,0 +1,1 @@
+{"name":"Follow & Guard","category":"normalnpcplayer:normal_npc_player_codex/growth","icon":"minecraft:lead","pages":[{"type":"patchouli:text","text":"Right-click with an empty hand toggles Follow. Sneak + empty-hand right-click sets Home. The configurable Guard Modifier + right-click toggles Guard/Hold Position. Authorized family players control these states."}]}

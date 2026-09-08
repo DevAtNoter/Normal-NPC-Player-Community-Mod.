@@ -1,0 +1,13 @@
+{
+  "name": "Child Care Guide",
+  "landing_text": "A practical guide to caring for a child. Keep the child safe, fed, and cared for.",
+  "subtitle": "Normal NPC Player",
+  "book_texture": "normalnpcplayer:textures/gui/patchouli/child_care_guide.png",
+  "filler_texture": "normalnpcplayer:textures/gui/patchouli/page_filler.png",
+  "crafting_texture": "normalnpcplayer:textures/gui/patchouli/crafting.png",
+  "model": "normalnpcplayer:child_care_guide",
+  "use_resource_pack": true,
+  "show_toasts": true,
+  "use_blocky_font": false,
+  "pause_game": false
+}

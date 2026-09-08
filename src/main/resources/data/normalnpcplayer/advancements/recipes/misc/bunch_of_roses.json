@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rose": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["normalnpcplayer:rose"]}]}
+    },
+    "has_pink_wool": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["minecraft:pink_wool"]}]}
+    },
+    "has_diamond_nugget": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["minecraft:diamond_nugget"]}]}
+    }
+  },
+  "requirements": [["has_rose"], ["has_pink_wool"], ["has_diamond_nugget"]],
+  "rewards": {"recipes": ["normalnpcplayer:bunch_of_roses"]}
+}

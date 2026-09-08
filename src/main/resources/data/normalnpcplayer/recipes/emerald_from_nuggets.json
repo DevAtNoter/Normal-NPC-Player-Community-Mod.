@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "emerald",
+  "pattern": ["EEE", "EEE", "EEE"],
+  "key": {
+    "E": {"item": "minecraft:emerald_nugget"}
+  },
+  "result": {
+    "item": "minecraft:emerald",
+    "count": 1
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "item.normalnpcplayer.totem_of_baby_combat": "โทเท็มแห่งการต่อสู้ของเด็ก",
+  "message.normalnpcplayer.breeding.cooldown": "คุณต้องรอก่อนจึงจะผสมพันธุ์ได้อีกครั้ง",
+  "message.normalnpcplayer.breeding.busy": "คุณกำลังอยู่ในสถานะผสมพันธุ์อยู่แล้ว",
+  "item.normalnpcplayer.rose": "กุหลาบ",
+  "item.normalnpcplayer.bunch_of_roses": "ช่อกุหลาบ",
+  "item.normalnpcplayer.silver_ring": "แหวนเงิน",
+  "item.normalnpcplayer.golden_ring": "แหวนทอง",
+  "item.normalnpcplayer.diamond_ring": "แหวนเพชร",
+  "item.normalnpcplayer.diamond_gem_fragment": "เศษอัญมณีเพชร",
+  "itemGroup.normalnpcplayer.affection_items": "ไอเทมแห่งความรัก",
+  "advancements.normalnpcplayer.starter_of_the_story.title": "จุดเริ่มต้นของเรื่องราว",
+  "advancements.normalnpcplayer.starter_of_the_story.description": "สร้างเด็กจากความรักกับผู้เล่นอีกคน",
+  "effect.minecraft.love": "ความรัก",
+  "entity.normalnpcplayer.unknown_player": "ผู้เล่นปริศนา"
+}

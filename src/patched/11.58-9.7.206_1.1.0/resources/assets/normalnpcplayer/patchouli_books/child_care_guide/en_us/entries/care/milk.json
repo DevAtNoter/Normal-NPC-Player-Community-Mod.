@@ -1,0 +1,11 @@
+{
+  "name": "Milk",
+  "category": "normalnpcplayer:child_care",
+  "icon": "minecraft:milk_bucket",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Milk is one of the basic ways to care for a child.\n\nMilk Bottle: use a Glass Bottle on a Cow.\n\nMilk Bucket: use a Bucket on a Cow.\n\nA Glass Bottle can also collect milk from another Player."
+    }
+  ]
+}

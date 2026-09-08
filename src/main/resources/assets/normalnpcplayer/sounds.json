@@ -1,0 +1,77 @@
+{
+  "baby.idle": {
+    "subtitle": "subtitles.entity.baby_player.idle",
+    "sounds": [
+      "normalnpcplayer:baby/idle/baby_idle_01",
+      "normalnpcplayer:baby/idle/baby_idle_02",
+      "normalnpcplayer:baby/idle/baby_idle_03",
+      "normalnpcplayer:baby/idle/baby_idle_04",
+      "normalnpcplayer:baby/idle/baby_idle_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.hungry": {
+    "subtitle": "subtitles.entity.baby_player.hungry",
+    "sounds": [
+      "normalnpcplayer:baby/hungry/baby_hungry_01",
+      "normalnpcplayer:baby/hungry/baby_hungry_02",
+      "normalnpcplayer:baby/hungry/baby_hungry_03",
+      "normalnpcplayer:baby/hungry/baby_hungry_04",
+      "normalnpcplayer:baby/hungry/baby_hungry_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.scared": {
+    "subtitle": "subtitles.entity.baby_player.cries",
+    "sounds": [
+      "normalnpcplayer:baby/scared/baby_scared_01",
+      "normalnpcplayer:baby/scared/baby_scared_02",
+      "normalnpcplayer:baby/scared/baby_scared_03",
+      "normalnpcplayer:baby/scared/baby_scared_04",
+      "normalnpcplayer:baby/scared/baby_scared_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.scream": {
+    "subtitle": "subtitles.entity.baby_player.scream",
+    "sounds": [
+      "normalnpcplayer:baby/scream/baby_scream_01",
+      "normalnpcplayer:baby/scream/baby_scream_02",
+      "normalnpcplayer:baby/scream/baby_scream_03",
+      "normalnpcplayer:baby/scream/baby_scream_04",
+      "normalnpcplayer:baby/scream/baby_scream_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.hurt": {
+    "subtitle": "subtitles.entity.baby_player.hurt",
+    "sounds": [
+      "normalnpcplayer:baby/hurt/baby_hurt_01",
+      "normalnpcplayer:baby/hurt/baby_hurt_02",
+      "normalnpcplayer:baby/hurt/baby_hurt_03",
+      "normalnpcplayer:baby/hurt/baby_hurt_04",
+      "normalnpcplayer:baby/hurt/baby_hurt_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.suffer": {
+    "subtitle": "subtitles.entity.baby_player.suffer",
+    "sounds": [
+      "normalnpcplayer:baby/suffer/baby_suffer_01",
+      "normalnpcplayer:baby/suffer/baby_suffer_02",
+      "normalnpcplayer:baby/suffer/baby_suffer_03",
+      "normalnpcplayer:baby/suffer/baby_suffer_04",
+      "normalnpcplayer:baby/suffer/baby_suffer_05"
+    ],
+    "attenuation_distance": 16
+  },
+  "baby.dead": {
+    "subtitle": "subtitles.entity.baby_player.dead",
+    "sounds": [
+      "normalnpcplayer:baby/dead/baby_dead_01",
+      "normalnpcplayer:baby/dead/baby_dead_02",
+      "normalnpcplayer:baby/dead/baby_dead_03"
+    ],
+    "attenuation_distance": 16
+  }
+}

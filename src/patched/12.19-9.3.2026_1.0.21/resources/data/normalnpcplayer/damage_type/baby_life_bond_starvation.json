@@ -1,0 +1,7 @@
+{
+  "message_id": "baby_life_bond_starvation",
+  "exhaustion": 0.0,
+  "scaling": "never",
+  "effects": "hurt",
+  "death_message_type": "default"
+}

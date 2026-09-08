@@ -1,0 +1,11 @@
+{
+  "name": "Where to Find It",
+  "category": "normalnpcplayer:baby_combat",
+  "icon": "minecraft:compass",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Seek the places where Baby Combat encounters are fought.\n\nThe totem is tied to those encounters, not ordinary treasure."
+    }
+  ]
+}
